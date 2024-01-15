@@ -26,7 +26,9 @@ end = False
 while not end:
   valid_calc = False
   while not valid_calc:
-    calc_store = str(input("Enter what you want to calculate, or enter 'X' to exit: "))
+    calc_store = str(input("""
+                     Enter what you want to calculate, or enter 'X' to exit: 
+                          """))
     if calc_store == "X":
       print("Thanks for using this calculator.")
       exit()
