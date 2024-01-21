@@ -42,6 +42,10 @@ while not end:
 
   # Split calculation into components of number and sign
   calc_list = re.split(rf"({sign.pattern})", calc_store)
+  # End current if there are no expressions to compute
+  if len(calc_list) < 3 or calc_list[0] == "":
+    print("There is nothing to calculate. Input = " + calc_store)
+    continue
   # Find initial answer
   answer = calc_result(calc_list[0], calc_list[1], calc_list[2])
   # While we haven't seen every list element
