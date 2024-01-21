@@ -45,10 +45,13 @@ while True:
   # Split calculation into components of number and sign
   calc_list = re.split(rf"({low_prio_sign.pattern})", calc_store)
 
+  # First pass through expression, to calc all times/divides
   for i, item in enumerate(calc_list):
+    # If current item is an expression, find result
     if re.fullmatch(explicit_exp, item):
       temp_list = re.split(rf"({high_prio_sign.pattern})", item)
       temp_total = calc_result(temp_list[0], temp_list[1], temp_list[2])
+      # Dealing with multiple times/divides in sequence
       count = 4
       while count <= (len(temp_list) - 1):
         # Add previous answer to next elements:
@@ -61,9 +64,9 @@ while True:
     print(f"Answer: {calc_list[0]}")
     continue
 
-  # Find initial answer
+  # Second pass through expression, to calc all add/minus
   answer = calc_result(calc_list[0], calc_list[1], calc_list[2])
-  # While we haven't seen every list element
+  # Dealing with multiple add/minus in sequence
   count = 4
   while count <= (len(calc_list) - 1):
     # Add previous answer to next elements:
