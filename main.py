@@ -13,18 +13,19 @@ def calc_result(term1, sign, term2):
     return term1 * term2
   elif sign == "/":
     return term1 / term2
-
+  
 
 # set regex rules for determining a valid expression
 number = re.compile(r"\-?[0-9]{1,}")
-sign = re.compile(r"[\*\+\-\/]")
-exp = re.compile(number.pattern + rf"({sign.pattern}{number.pattern})*")
-bracketed_exp = re.compile(rf"\({exp.pattern}\)")
+low_prio_sign = re.compile(r"[\+\-]")
+high_prio_sign = re.compile(r"[\*\/]")
+# number plus any number of (sign and number)
+exp = re.compile(number.pattern+rf"(({low_prio_sign.pattern}|{high_prio_sign.pattern}){number.pattern})*")
+# Single numbers not accepted, must be an a full x sign y
+explicit_exp = re.compile(number.pattern+rf"(({low_prio_sign.pattern}|{high_prio_sign.pattern}){number.pattern}){{1,}}")
 
-# Get expression from user, make sure it's valid
-end = False
 
-while not end:
+while True:
   valid_calc = False
   while not valid_calc:
     calc_store = str(input("""Enter what you want to calculate, or enter 'X' to exit: """))
@@ -32,6 +33,7 @@ while not end:
       print("Thanks for using this calculator.")
       exit()
     calc_store = calc_store.replace(" ", "")
+    # Send error message if no expressions are seen in input
     if re.fullmatch(exp, calc_store) == None:
       print("""Invalid expression.
   There needs to exist at least one whole number, followed by a symbol, followed by another whole number.
@@ -41,18 +43,31 @@ while not end:
       valid_calc = True
 
   # Split calculation into components of number and sign
-  calc_list = re.split(rf"({sign.pattern})", calc_store)
-  # End current if there are no expressions to compute
+  calc_list = re.split(rf"({low_prio_sign.pattern})", calc_store)
+
+  for i, item in enumerate(calc_list):
+    if re.fullmatch(explicit_exp, item):
+      temp_list = re.split(rf"({high_prio_sign.pattern})", item)
+      temp_total = calc_result(temp_list[0], temp_list[1], temp_list[2])
+      count = 4
+      while count <= (len(temp_list) - 1):
+        # Add previous answer to next elements:
+        temp_total = calc_result(str(temp_total), temp_list[count - 1], temp_list[count])
+        count += 2
+      calc_list[i] = temp_total
+
+  # End current if there are no more expressions to compute
   if len(calc_list) < 3 or calc_list[0] == "":
-    print("There is nothing to calculate. Input = " + calc_store)
+    print(f"Answer: {calc_list[0]}")
     continue
+
   # Find initial answer
   answer = calc_result(calc_list[0], calc_list[1], calc_list[2])
   # While we haven't seen every list element
   count = 4
   while count <= (len(calc_list) - 1):
     # Add previous answer to next elements:
-    answer = calc_result(answer, calc_list[count - 1], calc_list[count])
+    answer = calc_result(str(answer), calc_list[count - 1], calc_list[count])
     count += 2
   
   # output answer
