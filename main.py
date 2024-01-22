@@ -17,7 +17,7 @@ def calc_result(term1, sign, term2):
 
 # set regex rules for determining a valid expression
 number = re.compile(r"\-?[0-9]{1,}")
-low_prio_sign = re.compile(r"[\+\-]")
+low_prio_sign = re.compile(r"(?<![\*\/])[\+\-]")
 high_prio_sign = re.compile(r"[\*\/]")
 # number plus any number of (sign and number)
 exp = re.compile(number.pattern+rf"(({low_prio_sign.pattern}|{high_prio_sign.pattern}){number.pattern})*")
