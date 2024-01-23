@@ -1,3 +1,3 @@
 # Calculator-test
 Basic calculator made using Python.
-Can perform addition/subtraction/addition/multiplication, while taking into account the separation of components via brackets.
+Can perform addition/subtraction/addition/multiplication, while taking into account priority of calculation, via DMAS. (Progressing towards implementation of brackets and indicies)
