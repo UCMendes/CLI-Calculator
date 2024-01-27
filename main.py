@@ -5,20 +5,25 @@ import math
 def calc_result(term1, sign, term2):
   term1 = int(term1)
   term2 = int(term2)
-  if sign == "+":
-    return term1 + term2
-  elif sign == "-":
-    return term1 - term2
-  elif sign == "*":
-    return term1 * term2
-  elif sign == "/":
-    return term1 / term2
+  try:
+    if sign == "+":
+      return term1 + term2
+    elif sign == "-":
+      return term1 - term2
+    elif sign == "*":
+      return term1 * term2
+    elif sign == "/":
+      return term1 / term2
+  except ZeroDivisionError:
+    print("Error: Cannot divide by 0")
+    return "error"
   
 
 # set regex rules for determining a valid expression
 number = re.compile(r"\-?[0-9]{1,}")
 low_prio_sign = re.compile(r"(?<![\*\/])[\+\-]")
 high_prio_sign = re.compile(r"[\*\/]")
+bracket = re.compile(r"\([.]{1,}\)")
 # number plus any number of (sign and number)
 exp = re.compile(number.pattern+rf"(({low_prio_sign.pattern}|{high_prio_sign.pattern}){number.pattern})*")
 # Single numbers not accepted, must be an a full x sign y
@@ -33,6 +38,7 @@ while True:
       print("Thanks for using this calculator.")
       exit()
     calc_store = calc_store.replace(" ", "")
+
     # Send error message if no expressions are seen in input
     if re.fullmatch(exp, calc_store) == None:
       print("""Invalid expression.
@@ -42,22 +48,33 @@ while True:
     else:
       valid_calc = True
 
+  error_found = False
   # Split calculation into components of number and sign
   calc_list = re.split(rf"({low_prio_sign.pattern})", calc_store)
+  print(calc_list)
 
   # First pass through expression, to calc all times/divides
   for i, item in enumerate(calc_list):
+
     # If current item is an expression, find result
     if re.fullmatch(explicit_exp, item):
       temp_list = re.split(rf"({high_prio_sign.pattern})", item)
       temp_total = calc_result(temp_list[0], temp_list[1], temp_list[2])
+      if temp_total == "error":
+        error_found = True
+        break
+
       # Dealing with multiple times/divides in sequence
       count = 4
       while count <= (len(temp_list) - 1):
+
         # Add previous answer to next elements:
         temp_total = calc_result(str(temp_total), temp_list[count - 1], temp_list[count])
         count += 2
       calc_list[i] = temp_total
+
+  if error_found == True:
+    continue
 
   # End current if there are no more expressions to compute
   if len(calc_list) < 3 or calc_list[0] == "":
@@ -66,9 +83,11 @@ while True:
 
   # Second pass through expression, to calc all add/minus
   answer = calc_result(calc_list[0], calc_list[1], calc_list[2])
+
   # Dealing with multiple add/minus in sequence
   count = 4
   while count <= (len(calc_list) - 1):
+
     # Add previous answer to next elements:
     answer = calc_result(str(answer), calc_list[count - 1], calc_list[count])
     count += 2
