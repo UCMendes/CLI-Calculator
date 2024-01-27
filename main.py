@@ -60,7 +60,7 @@ while True:
     else:
       valid_calc = True
 
-  error_found = False
+
   # Split calculation into components of number and sign
   calc_list = re.split(rf"({low_prio_sign.pattern})", calc_store)
   print(calc_list)
@@ -72,9 +72,6 @@ while True:
     if re.fullmatch(explicit_exp, item):
       temp_list = re.split(rf"({high_prio_sign.pattern})", item)
       calc_list[i] = perform_calculation(temp_list)
-
-  if error_found == True:
-    continue
 
   # End current if there are no more expressions to calc
   if len(calc_list) < 3 or calc_list[0] == "":
