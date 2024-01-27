@@ -2,21 +2,33 @@ import re
 import math
 
 
-def calc_result(term1, sign, term2):
+def expression(term1, sign, term2):
   term1 = int(term1)
   term2 = int(term2)
+  if sign == "+":
+    return term1 + term2
+  elif sign == "-":
+    return term1 - term2
+  elif sign == "*":
+    return term1 * term2
+  elif sign == "/":
+    return term1 / term2
+  
+def perform_calculation(in_list):
   try:
-    if sign == "+":
-      return term1 + term2
-    elif sign == "-":
-      return term1 - term2
-    elif sign == "*":
-      return term1 * term2
-    elif sign == "/":
-      return term1 / term2
+    # Second pass through expression, to calc all add/minus
+    total = expression(in_list[0], in_list[1], in_list[2])
+
+    # Dealing with multiple signs in sequence
+    count = 4
+    while count <= (len(in_list) - 1):
+
+      # Add previous answer to next elements:
+      total = expression(str(total), in_list[count - 1], in_list[count])
+      count += 2
+    return total
   except ZeroDivisionError:
-    print("Error: Cannot divide by 0")
-    return "error"
+    return "Error: Cannot divide by 0"
   
 
 # set regex rules for determining a valid expression
@@ -59,42 +71,16 @@ while True:
     # If current item is an expression, find result
     if re.fullmatch(explicit_exp, item):
       temp_list = re.split(rf"({high_prio_sign.pattern})", item)
-      temp_total = calc_result(temp_list[0], temp_list[1], temp_list[2])
-      if temp_total == "error":
-        error_found = True
-        break
-
-      # Dealing with multiple times/divides in sequence
-      count = 4
-      while count <= (len(temp_list) - 1):
-
-        # Add previous answer to next elements:
-        temp_total = calc_result(str(temp_total), temp_list[count - 1], temp_list[count])
-        count += 2
-      calc_list[i] = temp_total
+      calc_list[i] = perform_calculation(temp_list)
 
   if error_found == True:
     continue
 
-  # End current if there are no more expressions to compute
+  # End current if there are no more expressions to calc
   if len(calc_list) < 3 or calc_list[0] == "":
     print(f"Answer: {calc_list[0]}")
     continue
-
-  # Second pass through expression, to calc all add/minus
-  answer = calc_result(calc_list[0], calc_list[1], calc_list[2])
-
-  # Dealing with multiple add/minus in sequence
-  count = 4
-  while count <= (len(calc_list) - 1):
-
-    # Add previous answer to next elements:
-    answer = calc_result(str(answer), calc_list[count - 1], calc_list[count])
-    count += 2
   
-  # output answer
-  print(f"Answer: {answer}")
-
-
-
+  # Second pass for plus and minus, then output answer
+  print(f"Answer: {perform_calculation(calc_list)}")
 
