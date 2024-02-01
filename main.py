@@ -5,8 +5,8 @@ import re
 class Calculation:
 
 
-    def __init__(self, init_list):
-        self.__init_list = init_list
+    def __init__(self, calc_list):
+        self.__calc_list = calc_list
 
     def simple_calc(self, term1, sign, term2):
         term1 = int(term1)
@@ -20,34 +20,82 @@ class Calculation:
         if sign == "/":
             return term1 / term2
 
-    def full_calc(self, input_list):
+    def full_calc(self):
         try:
+            if len(self.__calc_list) == 2:
+                return "".join(self.__calc_list)
             # Calc first expression in list
-            total = self.simple_calc(input_list[0], input_list[1], input_list[2])
+            total = self.simple_calc(self.__calc_list[0], self.__calc_list[1], self.__calc_list[2])
 
             # Dealing with multiple signs in sequence ex: "2+2+2+2"
             count = 4
-            while count <= (len(input_list) - 1):
+            while count <= (len(self.__calc_list) - 1):
 
                 # Add previous answer to next elements:
-                total = self.simple_calc(str(total), input_list[count - 1], input_list[count])
+                total = self.simple_calc(str(total), self.__calc_list[count - 1], self.__calc_list[count])
                 count += 2
             return total
         except ZeroDivisionError:
             return "Error: Cannot divide by 0"
 
-    # Get current calculation
-    def get_status(self):
+    def filter_signs(self):
         """
-        Prints the current contents of init_list.
-        
+        Determines if signs in the calculation are indicating positivity/negativity.
+        If there are multiple in sequence, runs resolve_signs() to reduce to a single equivalent.
+        if a "*/" is seen before "+-", reduces "+-" before joining result to the following letter.
+
+
         Parameters:
-            No arguments.
+            No parameters.
 
         Returns:
             Nothing is returned.
         """
-        print(self.__init_list)
+        first_sect = True
+        for count, sect in enumerate(self.__calc_list):
+            if len(re.findall(LOW_PRIO_SIGN.pattern, sect)) >= 2:
+                if first_sect:
+                    first_sect = False
+                    self.__calc_list[count + 1] = self.resolve_signs(sect) + self.__calc_list[count + 1]
+                    self.__calc_list[count] = ""
+                else:
+                    self.__calc_list[count] = self.resolve_signs(sect)
+        self.__calc_list = [i for i in self.__calc_list if i != ""]
+
+    def resolve_signs(self, sign_string):
+        """
+        Reduces multiple "+-" signs in sequence to a single equivalent:
+        Example:
+            "++" returns "+"
+            "--" returns "+"
+            "+-+" returns "-"
+
+        Parameters:
+            (str) sign_string, the string to reduce
+
+        Returns:
+            (str) result, a string of either "+" or "-" 
+        """
+        result = "+"
+        for symbol in sign_string:
+            if symbol == "-" and result == "+":
+                result = "-"
+            elif symbol == "-" and result == "-":
+                result = "+"
+        return result
+
+    def get_status(self):
+        """
+        Prints the current contents of calc_list.
+        
+        Parameters:
+            No parameters.
+
+        Returns:
+            Nothing is returned.
+        """
+        print(self.__calc_list)
+
 
 
 # set regex rules for determining a valid expression
@@ -87,9 +135,10 @@ while True:
 
 
     # Split calculation into components of number and sign
-    calc_list = re.split(rf"({NUMBER.pattern})", calc_store)
-    calc_list = [i for i in calc_list if i != ""]
-    curr = Calculation(calc_list)
+    temp_list = re.split(rf"({NUMBER.pattern})", calc_store)
+    temp_list = [i for i in temp_list if i != ""]
+    curr = Calculation(temp_list)
+    curr.filter_signs()
 
     # Second pass for plus and minus, then output answer
-    print(f"Answer: {curr.full_calc}")
+    print(f"Answer: {curr.full_calc()}")
