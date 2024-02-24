@@ -81,9 +81,10 @@ class Calculation:
             signs_found = len(re.findall(cr.LOW_PRIO_SIGN.pattern, section))
             if signs_found >= 1 and first_section:
                 first_section = False
-                self.__calc_list[count + 1] = self.resolve_signs(section) + self.__calc_list[count + 1]
+                self.__calc_list[count + 1] = \
+                  self.resolve_signs(section) + self.__calc_list[count + 1]
                 self.__calc_list[count] = ""
-                
+
             elif signs_found >= 1 and \
               re.search(cr.HIGH_PRIO_SIGN.pattern, section):
                 self.__calc_list[count + 1] = \

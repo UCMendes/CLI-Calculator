@@ -12,7 +12,7 @@ EXP = re.compile(
   # Followed by NUMBER, repeat line 47 any amount of times.
   rf"({LOW_PRIO_SIGN.pattern})*" +
   NUMBER.pattern +
-  rf"""(({HIGH_PRIO_SIGN.pattern}({LOW_PRIO_SIGN.pattern})*|({LOW_PRIO_SIGN.pattern}){{1,}}){NUMBER.pattern})*""") 
+  rf"""(({HIGH_PRIO_SIGN.pattern}({LOW_PRIO_SIGN.pattern})*|({LOW_PRIO_SIGN.pattern}){{1,}}){NUMBER.pattern})*""")
 
 # EXP but at least one sequence of line 53 needs to occur.
 EXPLICIT_EXP = re.compile(
