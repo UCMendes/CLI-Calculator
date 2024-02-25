@@ -3,6 +3,7 @@ import re
 import calc_regex as cr
 import calculation as clc
 
+
 def main():
     while True:
         valid_calc = False
