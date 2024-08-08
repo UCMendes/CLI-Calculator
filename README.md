@@ -8,5 +8,5 @@ Current duties:
 
 
 Known issues/problematic calculations:
-- Incorrect prioritization of signs (left to right performed regardless of plus/minus or times/divide)
+
 
