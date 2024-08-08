@@ -21,15 +21,20 @@ def main():
                 valid_calc = True
 
 
-        # Split calculation into components of number and sign
+        # Split calculation into individual components (number/sign)
         temp_list = re.split(rf"({cr.NUMBER.pattern})", calc_store)
+        # Remove spaces
         temp_list = [i for i in temp_list if i != ""]
+        # Create object to store current state of expression
+        print(temp_list)
         curr = clc.Calculation(temp_list)
         curr.filter_signs()
         curr.get_status()
 
-        # Second pass for plus and minus, then output answer
-        print(f"Answer: {curr.full_calc()}")
+        # Return answer
+        if curr.check_times_divide():
+            curr.total_times_divide()
+        print(f"Answer: {curr.total_plus_minus()}")
 
 
 if __name__ == "__main__":
