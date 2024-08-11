@@ -23,7 +23,7 @@ class Calculation:
             (int) total, result of the calculation.
         """
         term1 = int(term1)
-        term2 = int(term2)
+        term2 = float(term2)
         if sign == "+":
             return term1 + term2
         if sign == "-":
@@ -45,8 +45,9 @@ class Calculation:
             (list) calc_list, result of list af.
         """
         try:
-            # Calc first expression in list
             for i in range(len(self.calc_list) - 1):
+                # if next index is a symbol, perform calculation and store in
+                # Current index
                 while i + 1 < len(self.calc_list) and \
                     re.search(cr.HIGH_PRIO_SIGN.pattern, self.calc_list[i + 1]):
                     self.calc_list[i] = str(self.simple_calc(
