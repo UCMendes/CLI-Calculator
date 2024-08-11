@@ -1,6 +1,6 @@
 """Imports"""
 import re
-import calc_regex as cr
+from calc_regex import EXP, NUMBER
 import calculation as clc
 
 
@@ -8,23 +8,23 @@ def main():
     while True:
         valid_calc = False
         while not valid_calc:
-            calc_store = str(input("""Enter what you want to calculate, or enter 'X' to exit: """))
-            if calc_store == "X":
+            calc_store = str(input("""Enter what you want to calculate, or enter 'x' to exit: """))
+            if calc_store.lower() == "x":
                 print("Thanks for using this calculator.")
                 exit()
             calc_store = calc_store.replace(" ", "")
 
             # Send error message if no expressions are seen in input
-            if re.fullmatch(cr.EXP, calc_store) is None:
+            if re.fullmatch(EXP, calc_store) is None:
                 print("Invalid expression.")
             else:
                 valid_calc = True
 
 
         # Split calculation into individual components (number/sign)
-        temp_list = re.split(rf"({cr.NUMBER.pattern})", calc_store)
+        temp_list = re.split(NUMBER, calc_store)
         # Remove spaces
-        temp_list = [i for i in temp_list if i != ""]
+        temp_list = [i for i in temp_list if (i != "" and i is not None)]
         # Create object to store current state of expression
         print(temp_list)
         curr = clc.Calculation(temp_list)

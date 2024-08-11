@@ -22,7 +22,7 @@ class Calculation:
         Returns:
             (int) total, result of the calculation.
         """
-        term1 = int(term1)
+        term1 = float(term1)
         term2 = float(term2)
         if sign == "+":
             return term1 + term2
