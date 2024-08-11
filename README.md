@@ -1,5 +1,5 @@
 # Calculator-test
-Basic calculator made using Python.
+Calculator made using Python, accessible using the command line/terminal.
 Can perform addition/subtraction/addition/multiplication, while taking into account priority of calculation, via DMAS.
 
 Current duties:
