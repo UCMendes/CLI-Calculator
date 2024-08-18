@@ -5,7 +5,9 @@ import re
 NUMBER = re.compile(r"(\d+\.\d+)|((?<!\.)\d+)")
 LOW_PRIO_SIGN = re.compile(r"[\+\-]")
 HIGH_PRIO_SIGN = re.compile(r"[\*\/]")
-EXP = re.compile(rf"({LOW_PRIO_SIGN.pattern})*({NUMBER.pattern})(({HIGH_PRIO_SIGN.pattern}({LOW_PRIO_SIGN.pattern})*|({LOW_PRIO_SIGN.pattern})+)({NUMBER.pattern}))*")
+INDICES = re.compile(r"\*\*")
+EXP_ADDITIONAL = re.compile(rf"(({INDICES.pattern}|{HIGH_PRIO_SIGN.pattern}({LOW_PRIO_SIGN.pattern})*|({LOW_PRIO_SIGN.pattern})+|)({NUMBER.pattern}))*")
+EXP_BASE = re.compile(rf"({LOW_PRIO_SIGN.pattern})*({NUMBER.pattern}){EXP_ADDITIONAL.pattern}")
   # Any amount of LOW_PRIO_SIGN followed by NUMBER
   # THEN EITHER one HIGH_PRIO_SIGN followed by any amount of LOW_PRIO_SIGN
   # OR At least one LOW_PRIO_SIGN

@@ -1,6 +1,6 @@
 """Imports"""
 import re
-from calc_regex import EXP, NUMBER
+from calc_regex import EXP_BASE, NUMBER
 import calculation as clc
 
 
@@ -15,7 +15,7 @@ def main():
             calc_store = calc_store.replace(" ", "")
 
             # Send error message if no expressions are seen in input
-            if re.fullmatch(EXP, calc_store) is None:
+            if re.fullmatch(EXP_BASE, calc_store) is None:
                 print("Invalid expression.")
             else:
                 valid_calc = True
@@ -32,6 +32,8 @@ def main():
         curr.get_status()
 
         # Return answer
+        if curr.check_indicies():
+            curr.total_indices()
         if curr.check_times_divide():
             curr.total_times_divide()
         print(f"Answer: {curr.total_plus_minus()}")

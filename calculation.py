@@ -34,6 +34,56 @@ class Calculation:
             return term1 / term2
         return None
     
+    def check_indicies(self):
+        """
+        Checks for if there are indicies in the equation
+        that need to be dealt with.
+
+        Parameters:
+            No Parameters.
+
+        Returns:
+            True/False depending on if an indicies sign is
+            spotted.
+        """
+        if ("**" in self.calc_list):
+            return True
+        return False
+    
+    def total_indices(self):
+        """
+        Performs all indicies calculations in calc_list.
+
+        Parameters:
+            No Parameters.
+
+        Returns:
+            (list) calc_list, result of list after processing.
+        """
+        for i in range(len(self.calc_list) - 1):
+            # if next index is a symbol, perform calculation and store in
+            # Current index
+            while i + 1 < len(self.calc_list) and \
+                re.search(cr.INDICES.pattern, self.calc_list[i + 1]):
+                self.calc_list[i] = str(pow(int(self.calc_list[i]), int(self.calc_list[i + 2])))
+                del self.calc_list[i + 2], self.calc_list[i + 1]
+
+    def check_times_divide(self):
+        """
+        Checks for if there are signs in the equation
+        that need to be dealt with before plus/minus.
+
+        Parameters:
+            No Parameters.
+
+        Returns:
+            True/False depending on if an times/divide sign is
+            spotted.
+        """
+        if ("*" in self.calc_list) or ("/" in self.calc_list):
+            return True
+        return False
+    
     def total_times_divide(self):
         """
         Performs all multiplication and division in calc_list.
@@ -42,7 +92,7 @@ class Calculation:
             No Parameters.
 
         Returns:
-            (list) calc_list, result of list af.
+            (list) calc_list, result of list after processing.
         """
         try:
             for i in range(len(self.calc_list) - 1):
@@ -58,11 +108,6 @@ class Calculation:
                     del self.calc_list[i + 2], self.calc_list[i + 1]
         except ZeroDivisionError:
             return "Error: Cannot divide by 0"
-        
-    def check_times_divide(self):
-        if ("*" in self.calc_list) or ("/" in self.calc_list):
-            return True
-        return False
 
     def total_plus_minus(self):
         """
@@ -94,7 +139,7 @@ class Calculation:
         """
         Determines if signs in the calculation are indicating positivity/negativity.
         If there are multiple in sequence, runs reduce_sign_sequence() to reduce to a single equivalent.
-        if a "*/" is seen before "+-", reduces "+-" before joining result to the following letter.
+        if a "* or /" is seen before "+ or -", reduces "+-" before joining result to the following letter.
 
         Parameters:
             No parameters.
