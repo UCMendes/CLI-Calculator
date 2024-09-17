@@ -17,6 +17,20 @@ def main():
             # Send error message if no expressions are seen in input
             if re.fullmatch(EXP_BASE, calc_store) is None:
                 print("Invalid expression.")
+            elif "(" in calc_store or ")" in calc_store:
+                bracket_total = 0
+                for char in calc_store:
+                    if char == "(":
+                        bracket_total += 1
+                    elif char == ")":
+                        bracket_total -= 1
+                        if bracket_total <= -1:
+                            print("Brackets are not balanced.")
+                            break
+                if bracket_total != 0:
+                    print("Brackets are not balanced.")
+                else:
+                    valid_calc = True
             else:
                 valid_calc = True
 
